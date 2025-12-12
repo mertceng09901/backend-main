@@ -1,6 +1,15 @@
 var mongoose=require("mongoose");
-var dbURI="mongodb://localhost/mekanbul";
-mongoose.connect(dbURI);
+var dbURI = process.env.MONGODB_URI || 'mongodb://localhost/mekanbul';
+
+mongoose.connect(dbURI)
+    .then(() => {
+        console.log('Veritabanına bağlandı: ' + (process.env.MONGODB_URI ? 'Atlas (Bulut)' : 'Local'));
+    })
+    .catch((err) => {
+        console.log('Bağlantı hatası:', err);
+    });
+/*var dbURI="mongodb://localhost/mekanbul";
+mongoose.connect(dbURI);*/
 mongoose.connection.on("connected",function(){
     console.log("Mongoose "+dbURI+" adresindeki veritabanına bağlandı.");
 });
