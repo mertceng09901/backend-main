@@ -72,9 +72,9 @@ const addVenue = async function (req, res) {
                 close: req.body.close2,
                 isClosed: req.body.isClosed2
             }]
-        }).then(function (venue) {
+        })//.then(function (venue) {
             createResponse(res, 201, venue);
-        });
+        //});
     } catch (error) {
         createResponse(res, "404", error);
     }
