@@ -1,0 +1,146 @@
+const database = 'mekanbul';
+use(database);
+db.venues.insertOne(
+{
+  "name": "Barida Cam Kafe",
+  "address": "Süleyman Demirel Üniversitesi",
+  "rating": 5,
+  "foodanddrink": [
+    "çay",
+    "kahve",
+    "pasta"
+  ],
+  "coordinates": [
+    37.83226584629666,
+    30.524732239878013
+  ],
+  "hours": [
+    {
+      "_id": ObjectId(),
+      "days": "Pazartesi-Cuma",
+      "open": "9:00",
+      "close": "23:00",
+      "isClosed": false
+    },
+    {
+      "_id": ObjectId(),
+      "days": "Cumartesi-Pazar",
+      "open": "11:00",
+      "close": "17:00",
+      "isClosed": false
+    }
+  ]
+}
+ );// Önceki kodun bittiği yerden devam edebilirsiniz veya ayrı bir dosyada çalıştırabilirsiniz.
+// "use(database);" satırı dosyanın başında varsa tekrar yazmanıza gerek yok.
+
+db.venues.insertOne(
+{
+  "name": "Starbucks",  // <-- 1. Mekan Adı
+  "address": "Centrum Garden AVM, Isparta", // <-- 2. Adres
+  "rating": 4, // <-- 3. Puan (1-5 arası)
+  "foodanddrink": [ // <-- 4. Yiyecek/İçecekler
+    "Filtre Kahve",
+    "Cheesecake",
+    "Latte"
+  ],
+  "coordinates": [ // <-- 5. Koordinatlar (Haritadaki yer)
+    37.7839, // Enlem (Latitude)
+    30.5578  // Boylam (Longitude)
+  ],
+  "hours": [
+    {
+      "_id": ObjectId(), // <-- Buraya dokunmayın, otomatik ID üretir
+      "days": "Pazartesi-Pazar", // <-- 6. Açık olduğu günler
+      "open": "08:00",  // <-- Açılış saati
+      "close": "23:00", // <-- Kapanış saati
+      "isClosed": false
+    }
+  ]
+}
+);// Önceki kodun bittiği yerden devam edebilirsiniz veya ayrı bir dosyada çalıştırabilirsiniz.
+// "use(database);" satırı dosyanın başında varsa tekrar yazmanıza gerek yok.
+
+db.venues.insertOne(
+{
+  "name": "Arabica",  // <-- 1. Mekan Adı
+  "address": "Centrum Garden AVM, Isparta", // <-- 2. Adres
+  "rating": 5, // <-- 3. Puan (1-5 arası)
+  "foodanddrink": [ // <-- 4. Yiyecek/İçecekler
+    "Filtre Kahve",
+    "Cheesecake",
+    "Mocha"
+  ],
+  "coordinates": [ // <-- 5. Koordinatlar (Haritadaki yer)
+    37.8614, // Enlem (Latitude)
+    35.1793  // Boylam (Longitude)
+  ],
+  "hours": [
+    {
+      "_id": ObjectId(), // <-- Buraya dokunmayın, otomatik ID üretir
+      "days": "Pazartesi-Pazar", // <-- 6. Açık olduğu günler
+      "open": "08:00",  // <-- Açılış saati
+      "close": "02:00", // <-- Kapanış saati
+      "isClosed": false
+    }
+  ]
+}
+);// Önceki kodun bittiği yerden devam edebilirsiniz veya ayrı bir dosyada çalıştırabilirsiniz.
+// "use(database);" satırı dosyanın başında varsa tekrar yazmanıza gerek yok.
+
+db.venues.insertOne(
+{
+  "name": "Coffy",  // <-- 1. Mekan Adı
+  "address": "Centrum Garden AVM, Isparta", // <-- 2. Adres
+  "rating": 3, // <-- 3. Puan (1-5 arası)
+  "foodanddrink": [ // <-- 4. Yiyecek/İçecekler
+    "Filtre Kahve",
+    "Türk Kahvesi",
+    "Latte"
+  ],
+  "coordinates": [ // <-- 5. Koordinatlar (Haritadaki yer)
+    30.7839, // Enlem (Latitude)
+    32.5578  // Boylam (Longitude)
+  ],
+  "hours": [
+    {
+      "_id": ObjectId(), // <-- Buraya dokunmayın, otomatik ID üretir
+      "days": "Pazartesi-Pazar", // <-- 6. Açık olduğu günler
+      "open": "09:00",  // <-- Açılış saati
+      "close": "00:00", // <-- Kapanış saati
+      "isClosed": false
+    }
+  ]
+}
+);
+// Önceki kodun bittiği yerden devam edebilirsiniz veya ayrı bir dosyada çalıştırabilirsiniz.
+// "use(database);" satırı dosyanın başında varsa tekrar yazmanıza gerek yok.
+
+db.venues.insertOne(
+{
+  "name": "Popeyes",  // <-- 1. Mekan Adı
+  "address": "Centrum Garden AVM, Isparta", // <-- 2. Adres
+  "rating": 4, // <-- 3. Puan (1-5 arası)
+  "foodanddrink": [ // <-- 4. Yiyecek/İçecekler
+    "Maxi XL menu",
+    "Barbekü soslu tavuk",
+    "cola"
+  ],
+  "coordinates": [ // <-- 5. Koordinatlar (Haritadaki yer)
+    31.7839, // Enlem (Latitude)
+    29.5578  // Boylam (Longitude)
+  ],
+  "hours": [
+    {
+      "_id": ObjectId(), // <-- Buraya dokunmayın, otomatik ID üretir
+      "days": "Pazartesi-Pazar", // <-- 6. Açık olduğu günler
+      "open": "12:00",  // <-- Açılış saati
+      "close": "23:00", // <-- Kapanış saati
+      "isClosed": false
+    }
+  ]
+}
+);
+       
+
+      
