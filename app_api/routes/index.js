@@ -1,7 +1,7 @@
 var express= require('express');
 var router=express.Router();
-var venueController=require("../controller/VenueController");
-var commentController=require("../controller/CommentController");
+var venueController=require("../controllers/VenueController");
+var commentController=require("../controllers/CommentController");
 router
 .route("/venues")
 .get(venueController.listVenues)
