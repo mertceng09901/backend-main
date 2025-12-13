@@ -53,7 +53,7 @@ const listVenues = function (req, res) {
     }
 };
 
-const addVenue = async function (req, res) {
+/*const addVenue = async function (req, res) {
     //createResponse(res, 200, { status: "başarılı" });
 
     try {
@@ -77,6 +77,52 @@ const addVenue = async function (req, res) {
         //});
     } catch (error) {
         createResponse(res, "404", error);
+    }
+}*/
+const addVenue = async function (req, res) {
+    try {
+        // ADIM 1: İstek geldi mi?
+        console.log("--> 1. addVenue isteği sunucuya ulaştı.");
+        console.log("--> 2. Gelen Veri:", JSON.stringify(req.body));
+
+        // ADIM 2: Veritabanı işlemi başlıyor
+        // coordinates dizisini ve hours dizisini doğru formatladığımızdan emin oluyoruz
+        const newVenue = await Venue.create({
+            name: req.body.name,
+            address: req.body.address,
+            foodanddrink: req.body.foodanddrink,
+            rating: req.body.rating,
+            coordinates: [parseFloat(req.body.lat), parseFloat(req.body.long)], // Sayıya çeviriyoruz
+            hours: [
+                {
+                    days: req.body.days1,
+                    open: req.body.open1,
+                    close: req.body.close1,
+                    isClosed: req.body.isClosed1
+                },
+                {
+                    days: req.body.days2,
+                    open: req.body.open2,
+                    close: req.body.close2,
+                    isClosed: req.body.isClosed2
+                }
+            ]
+        });
+
+        // ADIM 3: Veritabanı kaydı bitti
+        console.log("--> 3. Mekan veritabanına kaydedildi. ID:", newVenue._id);
+
+        // ADIM 4: Cevap dönülüyor
+        createResponse(res, 201, newVenue);
+        console.log("--> 4. Başarılı cevap gönderildi.");
+
+    } catch (error) {
+        // HATA YAKALAMA
+        console.error("!!! HATA OLUŞTU !!!");
+        console.error("Hata Mesajı:", error.message);
+        
+        // Hatayı Postman'e de dönelim ki neyin yanlış olduğunu gör
+        createResponse(res, 400, { "status": "Hata oluştu", "mesaj": error.message });
     }
 }
 
