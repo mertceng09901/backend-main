@@ -67,7 +67,7 @@ const createResponse =async function (res, status, content) {
     res.status(status).json(content);
     //createResponse(res, 200, { status: "başarılı" });
 
-    try {  
+    /*try {  
          await Venue.findById(req.params.venueid).exec().then(function (venue) {
             if (!venue) {
                 createResponse(res, "404", "Mekanid yanlış");
@@ -85,7 +85,7 @@ const createResponse =async function (res, status, content) {
      })}
      catch (error) {
         createResponse(res, "404", error);
-    } 
+    } */
 }
 const getComment = async function (req, res) {
     try {
