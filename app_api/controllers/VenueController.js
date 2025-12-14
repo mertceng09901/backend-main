@@ -6,7 +6,7 @@ const createResponse = function (res, status, content) {
 }
 
 var converter = (function () {
-    var earthRadius = 6371; // km
+    var earthRadius = 6371; 
     var radian2Kilometer = function (radian) {
         return parseFloat(radian * earthRadius);
     };
