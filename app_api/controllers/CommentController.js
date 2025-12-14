@@ -1,181 +1,152 @@
 var mongoose = require('mongoose');
 var Venue = mongoose.model("venue");
 
+const createResponse = function (res, status, content) {
+    res.status(status).json(content);
+};
 
-var calculateLastRating = function (incomingVenue,isDeleted) {
-
-    var i,
-    numComments,
-    avgRating,
-    sumRating = 0;
-
-    var numComments = incomingVenue.comments.length;
-
-    if(incomingVenue.comments){
-        if(incomingVenue.comments.length==0&& isDeleted){
-            avgRating=0;
-        }
-        else{
+var calculateLastRating = function (incomingVenue, isDeleted) {
+    var i, numComments, avgRating, sumRating = 0;
+    
+    
+    if (incomingVenue.comments) {
+        numComments = incomingVenue.comments.length;
+        
+        if (numComments === 0 && isDeleted) {
+            avgRating = 0;
+        } else {
             for (i = 0; i < numComments; i++) {
                 sumRating += incomingVenue.comments[i].rating;
             }
-            avgRating = Math.ceil(sumRating / numComments);
+            // Sıfıra bölünme hatasını önlemek için kontrol
+            avgRating = numComments > 0 ? Math.ceil(sumRating / numComments) : 0;
         }
         incomingVenue.rating = avgRating;
         incomingVenue.save();
     }
 };
 
-var updateRating = function (venueId,isDeleted) {
-
+var updateRating = function (venueId, isDeleted) {
     Venue.findById(venueId)
-    .select("rating comments")
-    .exec()
-    .then(function (venue) {
-        calculateLastRating(venue,isDeleted);
-    });
-} 
+        .select("rating comments")
+        .exec()
+        .then(function (venue) {
+            calculateLastRating(venue, isDeleted);
+        });
+};
 
-const createComment = function (req, res,incomingVenue) {
-    try{
-
+const createComment = function (req, res, incomingVenue) {
+    try {
         incomingVenue.comments.push(req.body);
         incomingVenue.save().then(function (venue) {
-            var comments=venue.comments;
-            var comment=comments[comments.length-1];
-            updateRating(venue._id,false);
-            createResponse(res, "201", comments);
+            var comments = venue.comments;
+            var comment = comments[comments.length - 1];
+            updateRating(venue._id, false);
+            createResponse(res, 201, comment);
         });
-    }catch (error) {
-        createResponse(res, "400", error);
+    } catch (error) {
+        createResponse(res, 400, error);
     }
-}
-const addComment = async function (req, res) {  
-    try{
+};
 
+const addComment = async function (req, res) {
+    try {
         await Venue.findById(req.params.venueid)
-        .select("comments")
-        .exec()
-        .then(function (incomingVenue) {
-            createComment(req, res, incomingVenue);
-        });
-    }catch (error) {
-        createResponse(res, "400",{status:"Yorum ekleme başarısız"});
+            .select("comments")
+            .exec()
+            .then(function (incomingVenue) {
+                if (!incomingVenue) {
+                    createResponse(res, 404, { "status": "Mekan bulunamadı" });
+                } else {
+                    createComment(req, res, incomingVenue);
+                }
+            });
+    } catch (error) {
+        createResponse(res, 400, { status: "Yorum ekleme başarısız" });
     }
-}
-const createResponse =async function (res, status, content) {
-    res.status(status).json(content);
-    //createResponse(res, 200, { status: "başarılı" });
+};
 
-    /*try {  
-         await Venue.findById(req.params.venueid).exec().then(function (venue) {
-            if (!venue) {
-                createResponse(res, "404", "Mekanid yanlış");
-            } else {
-                venue.comments.push({
-                    author: req.body.author,
-                    rating: req.body.rating,
-                    comment: req.body.comment
-                });
-                calculateLastRating(venue);
-                createResponse(res, "200", { status: "başarılı" });
-            }
-
-
-     })}
-     catch (error) {
-        createResponse(res, "404", error);
-    } */
-}
 const getComment = async function (req, res) {
     try {
         await Venue.findById(req.params.venueid).select("name comments").exec().then(function (venue) {
-            
             var response, comment;
             if (!venue) {
-                createResponse(res, "404", "Mekanid yanlış");
-            } else if (venue.comments.id(req.params.commentid)) {
+                createResponse(res, 404, { "status": "Mekanid yanlış" });
+            } else if (venue.comments && venue.comments.id(req.params.commentid)) {
                 comment = venue.comments.id(req.params.commentid);
-              
                 response = {
                     venue: {
                         name: venue.name,
-                        id: req.params.id,
+                        id: req.params.venueid,
                     },
                     comment: comment
-                }
-                createResponse(res, "200", response);
+                };
+                createResponse(res, 200, response);
             } else {
-         
-                createResponse(res, "404", "Yorum id yanlış");
+                createResponse(res, 404, { "status": "Yorum id yanlış" });
             }
         });
     } catch (error) {
-        createResponse(res, "404", "Mekan bulunamadı");
-    }
-};
-const updateComment =async function (req, res) {
-   // createResponse(res, 200, { status: "başarılı" });
-   try {
-        await Venue.findById(req.params.venueid)
-        .select("comments")
-        .exec()
-        .then(function (venue) {
-            try{
-                let comment=venue.comments.id(req.params.commentid);
-                comment.set(req.body);
-                venue.save().then(function (venueUpdated) {
-                    updateRating(venueUpdated._id,false);
-                    createResponse(res, "201", comment);
-                });
-            
-        } catch (error) {
-        createResponse(res, "404", error);
-       }
-        });
-    } catch (error) {
-        createResponse(res, "404", error);
+        createResponse(res, 404, { "status": "Mekan bulunamadı" });
     }
 };
 
-const deleteVenue =  async function (req, res) {
-    //createResponse(res, 200, { status: "başarılı" });
-    try {
-        await Venue.findByIdAndDelete(req.params.venueid)
-        .then(function (venue) {
-            createResponse(res,"200",{status: venue.name + "isimli mekan silindi"});
-        });
-    } catch (error) {
-        createResponse(res, "404", {status:"Böyle bir mekan yok"});
-    }
-};
- const deleteComment = async function (req, res) {
+const updateComment = async function (req, res) {
     try {
         await Venue.findById(req.params.venueid)
-        .select("comments")
-        .exec()
-        .then(function (venue) {
-            try{
-                let comment=venue.comments.id(req.params.commentid);  
-                comment.deleteOne();
-                venue.save().then(function (venueUpdated) {
-                    updateRating(venueUpdated._id,true);
-                    createResponse(res, "200", {status: comment.author + " isimli kişinin Yorum silindi"});
-                });
-            } catch (error) {
-                createResponse(res, "404", error);
-            }
-        });
+            .select("comments")
+            .exec()
+            .then(function (venue) {
+                try {
+                    let comment = venue.comments.id(req.params.commentid);
+                    if (!comment) {
+                        createResponse(res, 404, { "status": "Yorum bulunamadı" });
+                        return;
+                    }
+                    comment.set(req.body);
+                    venue.save().then(function (venueUpdated) {
+                        updateRating(venueUpdated._id, false);
+                        createResponse(res, 200, comment);
+                    });
+
+                } catch (error) {
+                    createResponse(res, 404, error);
+                }
+            });
     } catch (error) {
-        createResponse(res, "404", error);
+        createResponse(res, 404, error);
     }
 };
-    
+
+const deleteComment = async function (req, res) {
+    try {
+        await Venue.findById(req.params.venueid)
+            .select("comments")
+            .exec()
+            .then(function (venue) {
+                try {
+                    let comment = venue.comments.id(req.params.commentid);
+                    if (!comment) {
+                        createResponse(res, 404, { "status": "Yorum bulunamadı" });
+                        return;
+                    }
+                    comment.deleteOne();
+                    venue.save().then(function (venueUpdated) {
+                        updateRating(venueUpdated._id, true);
+                        createResponse(res, 200, { status: "Yorum silindi" });
+                    });
+                } catch (error) {
+                    createResponse(res, 404, error);
+                }
+            });
+    } catch (error) {
+        createResponse(res, 404, error);
+    }
+};
 
 module.exports = {
     addComment,
     getComment,
     updateComment,
     deleteComment
-}
-
+};
