@@ -12,7 +12,7 @@ var calculateLastRating = function (incomingVenue,isDeleted) {
     var numComments = incomingVenue.comments.length;
 
     if(incomingVenue.comments){
-        if(incomingVenue.commets.length==0&& isDeleted){
+        if(incomingVenue.comments.length==0&& isDeleted){
             avgRating=0;
         }
         else{
